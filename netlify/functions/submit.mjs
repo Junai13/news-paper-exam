@@ -1,4 +1,4 @@
-import { db, json } from "../lib/common.mjs";
+import { db, json, safe } from "../lib/common.mjs";
 import { CONFIG } from "../lib/questions.mjs";
 
 export const config = { path: "/api/submit" };
@@ -11,7 +11,7 @@ const publicResult = (a) => ({
   reason: a.reason || "",
 });
 
-export default async (req) => {
+export default safe(async (req) => {
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
   let body;
@@ -97,4 +97,4 @@ export default async (req) => {
   await store.delete("papers/" + id); // answers no longer needed
 
   return json(publicResult(saved));
-};
+});

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newspaper Zoning Qualifying Exam | ISM Data Technology</title>
+<meta name="robots" content="noindex">
+<style>
+  :root{--brand:#0b4f8a;--brand2:#0e7cc4;--ok:#1a8f4c;--bad:#c8372d;--bg:#f3f6fa;--card:#fff;--ink:#1d2733;--muted:#6b7785;--line:#dde4ec;--accent:#ff7800}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);-webkit-user-select:none;user-select:none}
+  header{background:linear-gradient(120deg,var(--brand),var(--brand2));color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+  header .t{font-weight:700;font-size:18px}
+  header .s{font-size:12px;opacity:.85}
+  #timer{background:rgba(255,255,255,.15);padding:6px 14px;border-radius:20px;font-weight:700;font-variant-numeric:tabular-nums;display:none}
+  #timer.warn{background:var(--bad)}
+  main{max-width:880px;margin:24px auto;padding:0 16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px;box-shadow:0 1px 3px rgba(0,0,0,.04);margin-bottom:18px}
+  h2{margin:0 0 6px;color:var(--brand)}
+  .muted{color:var(--muted)}
+  label.f{display:block;font-size:13px;font-weight:600;margin:14px 0 6px}
+  input[type=text],input[type=tel],input[type=email]{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;font-size:15px;-webkit-user-select:text;user-select:text}
+  input:focus{outline:2px solid var(--brand2);border-color:transparent}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+  @media(max-width:640px){.grid{grid-template-columns:1fr}}
+  ul.rules{padding-left:20px;line-height:1.7;margin:10px 0}
+  .btn{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:12px 22px;font-size:15px;font-weight:600;cursor:pointer}
+  .btn:hover{background:var(--brand2)}
+  .btn.sec{background:#e8eef5;color:var(--ink)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .err{color:var(--bad);font-size:13px;margin-top:10px;min-height:18px}
+  .progress{height:6px;background:#e3e9f0;border-radius:6px;overflow:hidden;margin:6px 0 16px}
+  .progress>div{height:100%;background:var(--brand2);width:0;transition:width .25s}
+  .qhead{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}
+  .qtag{background:#eef4fb;color:var(--brand);padding:3px 10px;border-radius:12px;font-weight:600;font-size:12px}
+  .qtext{font-size:18px;font-weight:600;margin:12px 0 14px;line-height:1.45}
+  .qimg{width:100%;border:1px solid var(--line);border-radius:8px;margin-bottom:14px;pointer-events:none}
+  .opt{display:flex;gap:12px;align-items:center;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;margin:9px 0;cursor:pointer;transition:all .12s;font-size:15px}
+  .opt:hover{border-color:var(--brand2);background:#f7fbff}
+  .opt.sel{border-color:var(--brand);background:#eaf3fc}
+  .opt .k{width:28px;height:28px;flex:0 0 28px;border-radius:50%;background:#eef2f6;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+  .opt.sel .k{background:var(--brand);color:#fff}
+  .nav{display:flex;justify-content:space-between;gap:10px;margin-top:18px;flex-wrap:wrap}
+  .pal{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .pal button{width:34px;height:34px;border-radius:7px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:12px;font-weight:600}
+  .pal button.ans{background:#d6ebdd;border-color:#9fd1b1}
+  .pal button.cur{outline:2px solid var(--brand)}
+  .result{text-align:center}
+  .big{font-size:54px;font-weight:800;margin:10px 0}
+  .pass{color:var(--ok)} .fail{color:var(--bad)}
+  .badge{display:inline-block;padding:6px 18px;border-radius:20px;font-weight:700;color:#fff}
+  .hidden{display:none}
+  footer{text-align:center;font-size:12px;color:var(--muted);padding:20px}
+  #warn{position:fixed;inset:0;background:rgba(15,23,35,.96);z-index:50;display:none;align-items:center;justify-content:center;padding:20px}
+  #warn .box{background:#fff;border-radius:14px;max-width:460px;padding:28px;text-align:center}
+  #warn h2{color:var(--bad)}
+  #warn .n{font-size:15px;margin:10px 0 18px;line-height:1.6}
+  .sw{display:inline-block;background:#fdecea;color:var(--bad);font-weight:700;padding:3px 12px;border-radius:12px;font-size:13px}
+  .banner{background:#fff8e6;border:1px solid #f3dca0;border-radius:8px;padding:8px 12px;font-size:13px;margin-bottom:12px}
+</style>
+</head>
+<body oncontextmenu="return false">
+
+<header>
+  <div><div class="t">ISM Data Technology</div><div class="s">Newspaper Zoning – Qualifying Exam (Web Zoner)</div></div>
+  <div id="timer">30:00</div>
+</header>
+
+<!-- Warning shown when the candidate leaves the exam screen -->
+<div id="warn"><div class="box">
+  <h2>⚠ Warning</h2>
+  <div class="sw" id="warnCount"></div>
+  <div class="n" id="warnText"></div>
+  <button class="btn" id="warnBtn">Return to exam</button>
+</div></div>
+
+<main>
+  <!-- START -->
+  <section id="start" class="card">
+    <h2>Newspaper Zoning Qualifying Exam</h2>
+    <p class="muted">Vendor IDs are issued only to candidates who clear this exam.</p>
+    <div class="grid">
+      <div><label class="f">Full Name *</label><input id="name" type="text" autocomplete="name" maxlength="100"></div>
+      <div><label class="f">Mobile Number *</label><input id="mobile" type="tel" maxlength="10" placeholder="10-digit number"></div>
+      <div><label class="f">Email *</label><input id="email" type="email" maxlength="150"></div>
+      <div><label class="f">Vendor / Company Name *</label><input id="vendor" type="text" maxlength="120"></div>
+      <div><label class="f">City / Town *</label><input id="city" type="text" maxlength="80"></div>
+    </div>
+    <h3 style="margin:22px 0 4px">Exam Rules</h3>
+    <ul class="rules">
+      <li><b><span id="rTotal">40</span> questions</b> · multiple choice · <b><span id="rMin">30</span> minutes</b></li>
+      <li>Pass mark: <b><span id="rPass">80</span>%</b></li>
+      <li>Based on the Web Zoner training: zone types, colours, shortcut keys, toolbar and workflow.</li>
+      <li>The exam auto-submits when the timer ends.</li>
+      <li><b>The exam runs in full-screen. Do NOT switch tabs, open another window or exit full-screen.</b> Every time you leave, you get a warning. At warning <b><span id="rMax">3</span></b> the exam ends automatically and you are <b>disqualified</b>.</li>
+      <li>On a mobile phone, an incoming call or notification that takes you out of the page also counts.</li>
+      <li>Only one attempt is allowed per mobile number and email. Do not refresh or close the page once you start.</li>
+    </ul>
+    <div class="err" id="startErr"></div>
+    <button class="btn" id="startBtn">Start Exam</button>
+  </section>
+
+  <!-- EXAM -->
+  <section id="exam" class="card hidden">
+    <div class="qhead"><span id="qcount">Question 1 of 40</span><span class="qtag" id="qtag"></span></div>
+    <div class="progress"><div id="bar"></div></div>
+    <div id="vbanner"></div>
+    <div id="qimgWrap"></div>
+    <div class="qtext" id="qtext"></div>
+    <div id="opts"></div>
+    <div class="nav">
+      <button class="btn sec" id="prevBtn">← Previous</button>
+      <div style="display:flex;gap:10px">
+        <button class="btn" id="nextBtn">Next →</button>
+        <button class="btn" id="submitBtn" style="background:var(--ok)">Submit Exam</button>
+      </div>
+    </div>
+    <div style="margin-top:22px"><div class="muted" style="font-size:13px">Question palette (green = answered)</div><div class="pal" id="pal"></div></div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result" class="card result hidden"></section>
+</main>
+<footer>© ISM Data Technology · www.ismdatatech.com</footer>
+
+<script>
+const L = ["A","B","C","D"];
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+let QS = [], ans = [], cur = 0, tick = null, started = false, done = false;
+let attemptId = null, endsAt = 0, clockOffset = 0, MAXV = 3;
+let violations = [], lastV = 0, ignoreUntil = 0, inDialog = false, lastPayload = null;
+const fsSupported = !!document.documentElement.requestFullscreen;
+
+// ---------- show exam rules from server settings ----------
+fetch("/api/start").then(r => r.json()).then(c => {
+  $("rTotal").textContent = c.total; $("rMin").textContent = Math.round(c.durationSec / 60);
+  $("rPass").textContent = c.passPct; $("rMax").textContent = c.maxViolations; MAXV = c.maxViolations;
+}).catch(() => {});
+
+// ---------- full-screen helpers ----------
+function goFull() { try { if (fsSupported && !document.fullscreenElement) return document.documentElement.requestFullscreen().catch(() => {}); } catch (e) {} }
+function leaveFull() { try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) {} }
+
+// ---------- START ----------
+$("startBtn").onclick = async () => {
+  const v = k => $(k).value.trim();
+  const cand = { name: v("name"), mobile: v("mobile"), email: v("email"), vendor: v("vendor"), city: v("city") };
+  const err = m => { $("startErr").textContent = m; };
+  if (Object.values(cand).some(x => !x)) return err("Please fill all fields.");
+  if (!/^[6-9]\d{9}$/.test(cand.mobile)) return err("Enter a valid 10-digit mobile number.");
+  if (!/^\S+@\S+\.\S+$/.test(cand.email)) return err("Enter a valid email.");
+  err(""); $("startBtn").disabled = true; $("startBtn").textContent = "Starting…";
+  window.__cand = cand;
+  goFull(); // must be called straight from the click
+  try {
+    const res = await fetch("/api/start", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(cand) });
+    const d = await res.json();
+    if (!res.ok) { leaveFull(); $("startBtn").disabled = false; $("startBtn").textContent = "Start Exam"; return err(d.error || "Could not start the exam."); }
+    attemptId = d.attemptId; QS = d.questions; MAXV = d.maxViolations;
+    ans = new Array(QS.length).fill(null);
+    endsAt = d.endsAt; clockOffset = d.serverNow - Date.now();
+    $("start").classList.add("hidden"); $("exam").classList.remove("hidden"); $("timer").style.display = "block";
+    started = true; ignoreUntil = Date.now() + 1500; // ignore the focus changes caused by entering full-screen
+    render(); drawTimer(); tick = setInterval(drawTimer, 500);
+  } catch (e) {
+    leaveFull(); $("startBtn").disabled = false; $("startBtn").textContent = "Start Exam";
+    err("Network error. Please check your internet and try again.");
+  }
+};
+
+// ---------- TIMER (based on server end-time, cannot be paused) ----------
+const secLeft = () => Math.max(0, Math.round((endsAt - (Date.now() + clockOffset)) / 1000));
+function drawTimer() {
+  const left = secLeft(), m = Math.floor(left / 60), s = left % 60;
+  $("timer").textContent = `⏱ ${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  $("timer").classList.toggle("warn", left <= 300);
+  if (left <= 0 && !done) submit("time");
+}
+
+// ---------- QUESTIONS ----------
+function render() {
+  const q = QS[cur];
+  $("qcount").textContent = `Question ${cur + 1} of ${QS.length}`;
+  $("qtag").textContent = q.tag;
+  $("bar").style.width = ((cur + 1) / QS.length * 100) + "%";
+  $("vbanner").innerHTML = violations.length ? `<div class="banner">⚠ Warnings used: <b>${violations.length}</b> of ${MAXV}. The exam ends at ${MAXV}.</div>` : "";
+  $("qimgWrap").innerHTML = q.img ? `<img class="qimg" src="${esc(q.img)}" alt="Question image" draggable="false">` : "";
+  $("qtext").textContent = q.q;
+  $("opts").innerHTML = q.opts.map((o, i) => `<div class="opt ${ans[cur] === i ? "sel" : ""}" data-i="${i}"><span class="k">${L[i]}</span><span>${esc(o)}</span></div>`).join("");
+  document.querySelectorAll(".opt").forEach(el => el.onclick = () => { ans[cur] = +el.dataset.i; render(); });
+  $("prevBtn").disabled = cur === 0;
+  $("nextBtn").style.display = cur === QS.length - 1 ? "none" : "inline-block";
+  $("pal").innerHTML = QS.map((_, i) => `<button class="${ans[i] !== null ? "ans" : ""} ${i === cur ? "cur" : ""}" data-i="${i}">${i + 1}</button>`).join("");
+  document.querySelectorAll("#pal button").forEach(b => b.onclick = () => { cur = +b.dataset.i; render(); });
+}
+$("prevBtn").onclick = () => { if (cur > 0) { cur--; render(); } };
+$("nextBtn").onclick = () => { if (cur < QS.length - 1) { cur++; render(); } };
+$("submitBtn").onclick = () => {
+  const un = ans.filter(a => a === null).length;
+  inDialog = true; // the confirm box makes the window lose focus - do not count that
+  const yes = confirm(un ? `You have ${un} unanswered question(s). Submit anyway?` : "Submit your exam now?");
+  setTimeout(() => { inDialog = false; ignoreUntil = Date.now() + 500; }, 300);
+  if (yes) submit("");
+};
+
+// ---------- TAB / WINDOW SWITCH DETECTION ----------
+function violation(type) {
+  if (!started || done || inDialog) return;
+  const now = Date.now();
+  if (now < ignoreUntil || now - lastV < 1500) return; // one event often fires several signals together
+  lastV = now;
+  violations.push({ t: now, type });
+  if (violations.length >= MAXV) { submit("violations"); return; }
+  const left = MAXV - violations.length;
+  $("warnCount").textContent = `Warning ${violations.length} of ${MAXV}`;
+  $("warnText").innerHTML = `You left the exam screen (${type === "fullscreen" ? "exited full-screen" : "switched tab / window"}).<br>This is recorded and reported.<br><b>${left} more time${left > 1 ? "s" : ""} and your exam will be ended and you will be disqualified.</b>`;
+  $("warn").style.display = "flex";
+}
+$("warnBtn").onclick = () => { $("warn").style.display = "none"; ignoreUntil = Date.now() + 1000; goFull(); render(); };
+
+document.addEventListener("visibilitychange", () => { if (document.hidden) violation("tab"); });
+window.addEventListener("blur", () => setTimeout(() => { if (!document.hasFocus()) violation("window"); }, 300));
+document.addEventListener("fullscreenchange", () => { if (fsSupported && started && !done && !document.fullscreenElement) violation("fullscreen"); });
+window.addEventListener("beforeunload", e => { if (started && !done) { e.preventDefault(); e.returnValue = ""; } });
+["copy", "cut", "paste"].forEach(ev => document.addEventListener(ev, e => { if (started && !done) e.preventDefault(); }));
+
+// ---------- SUBMIT (server checks the answers and stores the result) ----------
+function submit(auto) {
+  if (done) return; done = true; clearInterval(tick);
+  $("warn").style.display = "none"; leaveFull();
+  $("exam").classList.add("hidden"); $("timer").style.display = "none";
+  lastPayload = { attemptId, answers: ans, violations, auto };
+  const r = $("result"); r.classList.remove("hidden");
+  r.innerHTML = `<h2>Submitting…</h2><p class="muted">Please wait. Do not close this page.</p>`;
+  send();
+}
+
+async function send() {
+  const r = $("result");
+  try {
+    const res = await fetch("/api/submit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(lastPayload) });
+    const d = await res.json();
+    if (!res.ok) throw new Error(d.error || "Server error");
+    showResult(d);
+  } catch (e) {
+    r.innerHTML = `<h2>Could not save your result</h2>
+      <p class="muted">${esc(e.message)}. Your answers are still on this page - do NOT close it.</p>
+      <button class="btn" id="retry">Try again</button>
+      <p class="muted" style="margin-top:14px">If it keeps failing, send a screenshot to official@ismdatatech.com</p>`;
+    $("retry").onclick = () => { r.innerHTML = `<h2>Submitting…</h2>`; send(); };
+  }
+}
+
+function showResult(d) {
+  const c = window.__cand, r = $("result");
+  const pass = d.result === "PASS", dq = d.result === "DISQUALIFIED";
+  const badge = pass ? ["var(--ok)", "QUALIFIED"] : [ "var(--bad)", dq ? "DISQUALIFIED" : "NOT QUALIFIED"];
+  const msg = pass ? "Congratulations! ISM Data Technology will contact you about vendor ID allocation."
+    : dq ? "Your exam was ended because you left the exam screen too many times. Please contact ISM Data Technology."
+    : d.reason ? esc(d.reason) + ". Please contact ISM Data Technology for the next steps."
+    : "Pass mark is not reached. Please revise the Web Zoner training and contact ISM Data Technology for the next steps.";
+  r.innerHTML = `<h2>Exam Submitted</h2><p class="muted">${esc(c.name)} · ${esc(c.vendor)}</p>
+    ${dq ? "" : `<div class="big ${pass ? "pass" : "fail"}">${d.score} / ${d.total}</div>`}
+    <div class="badge" style="background:${badge[0]}">${dq ? "" : d.percent + "% · "}${badge[1]}</div>
+    <p style="margin-top:18px">${msg}</p>
+    <p class="muted">✅ Your result has been recorded.</p>`;
+}
+</script>
+</body>
+</html>

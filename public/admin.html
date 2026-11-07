@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin | Newspaper Zoning Exam | ISM Data Technology</title>
+<style>
+  :root{--brand:#0b4f8a;--brand2:#0e7cc4;--ok:#1a8f4c;--bad:#c8372d;--warn:#b7791f;--bg:#f3f6fa;--card:#fff;--ink:#1d2733;--muted:#6b7785;--line:#dde4ec}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+  header{background:linear-gradient(120deg,var(--brand),var(--brand2));color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+  header .t{font-weight:700;font-size:18px} header .s{font-size:12px;opacity:.85}
+  main{max-width:1500px;margin:22px auto;padding:0 16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px;box-shadow:0 1px 3px rgba(0,0,0,.04);margin-bottom:18px}
+  h2{margin:0 0 6px;color:var(--brand)}
+  .muted{color:var(--muted)}
+  input[type=password],input[type=text],select{padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:15px}
+  input:focus,select:focus{outline:2px solid var(--brand2);border-color:transparent}
+  .btn{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer}
+  .btn:hover{background:var(--brand2)} .btn.sec{background:#e8eef5;color:var(--ink)} .btn.bad{background:var(--bad)} .btn.sm{padding:5px 10px;font-size:12px}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .err{color:var(--bad);font-size:13px;margin-top:10px;min-height:18px}
+  .hidden{display:none}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:18px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .stat b{display:block;font-size:26px} .stat span{font-size:12px;color:var(--muted)}
+  .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .bar .grow{flex:1;min-width:180px}
+  .wrap{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;font-size:14px}
+  th,td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+  th{background:#f7f9fc;font-size:12px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);position:sticky;top:0}
+  tr:hover td{background:#fafcff}
+  .pill{display:inline-block;padding:3px 10px;border-radius:12px;font-weight:700;font-size:12px;color:#fff}
+  .PASS{background:var(--ok)} .FAIL{background:var(--bad)} .DISQUALIFIED{background:#7a1f1f} .PROG{background:#6b7785} .NOSUB{background:var(--warn)}
+  .tsw{color:var(--bad);font-weight:700}
+  .modal{position:fixed;inset:0;background:rgba(15,23,35,.6);display:none;align-items:flex-start;justify-content:center;padding:30px 14px;overflow:auto;z-index:20}
+  .modal .box{background:#fff;border-radius:14px;max-width:900px;width:100%;padding:24px}
+  .kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 18px;margin:14px 0}
+  .kv div span{display:block;font-size:12px;color:var(--muted)}
+  .ok{color:var(--ok);font-weight:700} .no{color:var(--bad);font-weight:700}
+  td.q{white-space:normal;min-width:260px}
+</style>
+</head>
+<body>
+<header>
+  <div><div class="t">ISM Data Technology</div><div class="s">Newspaper Zoning Exam – Admin</div></div>
+  <button class="btn sec sm hidden" id="logout">Logout</button>
+</header>
+
+<main>
+  <!-- LOGIN -->
+  <section id="login" class="card" style="max-width:420px;margin:60px auto">
+    <h2>Admin Login</h2>
+    <p class="muted">Enter the admin password to see the exam results.</p>
+    <input type="password" id="pw" placeholder="Password" style="width:100%" autocomplete="current-password">
+    <div class="err" id="loginErr"></div>
+    <button class="btn" id="loginBtn" style="margin-top:6px">Login</button>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="dash" class="hidden">
+    <div class="stats" id="stats"></div>
+    <div class="card">
+      <div class="bar">
+        <input type="text" id="search" class="grow" placeholder="Search name, mobile, email, vendor, city…">
+        <select id="filter">
+          <option value="">All</option>
+          <option value="PASS">Passed</option>
+          <option value="FAIL">Failed</option>
+          <option value="DISQUALIFIED">Disqualified</option>
+          <option value="PROG">In progress</option>
+          <option value="NOSUB">Not submitted</option>
+        </select>
+        <button class="btn sec" id="refresh">↻ Refresh</button>
+        <button class="btn" id="csv">⬇ Download CSV</button>
+      </div>
+      <div class="muted" id="count" style="margin-bottom:8px"></div>
+      <div class="wrap">
+        <table>
+          <thead><tr><th>#</th><th>Name</th><th>Mobile</th><th>Email</th><th>Vendor</th><th>City</th><th>Score</th><th>%</th><th>Result</th><th>Tab switches</th><th>Time taken</th><th>Started (IST)</th><th></th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- DETAIL -->
+<div class="modal" id="modal"><div class="box" id="modalBox"></div></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ist = ms => ms ? new Date(ms).toLocaleString("en-IN", { timeZone: "Asia/Kolkata", day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "—";
+const dur = s => s == null ? "—" : `${Math.floor(s / 60)}m ${s % 60}s`;
+let DATA = [];
+
+const token = () => sessionStorage.getItem("zx_admin");
+async function api(path, opts = {}) {
+  const res = await fetch("/api/admin/" + path, { ...opts, headers: { "Content-Type": "application/json", Authorization: "Bearer " + (token() || "") } });
+  if (res.status === 401 && path !== "login") { logout(); throw new Error("Session expired. Please login again."); }
+  const d = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(d.error || "Server error");
+  return d;
+}
+
+// ---------- login / logout ----------
+async function doLogin() {
+  $("loginErr").textContent = ""; $("loginBtn").disabled = true;
+  try {
+    const d = await api("login", { method: "POST", body: JSON.stringify({ password: $("pw").value }) });
+    sessionStorage.setItem("zx_admin", d.token); $("pw").value = "";
+    showDash();
+  } catch (e) { $("loginErr").textContent = e.message; }
+  $("loginBtn").disabled = false;
+}
+$("loginBtn").onclick = doLogin;
+$("pw").addEventListener("keydown", e => { if (e.key === "Enter") doLogin(); });
+function logout() { sessionStorage.removeItem("zx_admin"); $("dash").classList.add("hidden"); $("logout").classList.add("hidden"); $("login").classList.remove("hidden"); }
+$("logout").onclick = logout;
+
+function showDash() { $("login").classList.add("hidden"); $("dash").classList.remove("hidden"); $("logout").classList.remove("hidden"); load(); }
+
+// ---------- list ----------
+async function load() {
+  $("count").textContent = "Loading…";
+  try { DATA = (await api("results")).list; draw(); }
+  catch (e) { $("count").textContent = e.message; }
+}
+
+const key = r => r.state === "submitted" ? r.result : r.state === "in_progress" ? "PROG" : "NOSUB";
+const label = k => ({ PASS: "PASS", FAIL: "FAIL", DISQUALIFIED: "DISQUALIFIED", PROG: "IN PROGRESS", NOSUB: "NOT SUBMITTED" }[k]);
+
+function draw() {
+  const q = $("search").value.trim().toLowerCase(), f = $("filter").value;
+  const rows = DATA.filter(r => (!f || key(r) === f) && (!q || [r.name, r.mobile, r.email, r.vendor, r.city].join(" ").toLowerCase().includes(q)));
+  const c = k => DATA.filter(r => key(r) === k).length;
+  $("stats").innerHTML = [["Total", DATA.length], ["Passed", c("PASS")], ["Failed", c("FAIL")], ["Disqualified", c("DISQUALIFIED")], ["In progress", c("PROG")], ["Not submitted", c("NOSUB")]]
+    .map(([a, b]) => `<div class="stat"><b>${b}</b><span>${a}</span></div>`).join("");
+  $("count").textContent = `Showing ${rows.length} of ${DATA.length}`;
+  $("rows").innerHTML = rows.map((r, i) => {
+    const k = key(r), sub = r.state === "submitted";
+    return `<tr>
+      <td>${i + 1}</td><td><b>${esc(r.name)}</b></td><td>${esc(r.mobile)}</td><td>${esc(r.email)}</td><td>${esc(r.vendor)}</td><td>${esc(r.city)}</td>
+      <td>${sub ? `${r.score} / ${r.total}` : "—"}</td><td>${sub ? r.percent + "%" : "—"}</td>
+      <td><span class="pill ${k}">${label(k)}</span></td>
+      <td class="${r.tabSwitches ? "tsw" : ""}">${sub ? r.tabSwitches : "—"}</td>
+      <td>${dur(r.timeTakenSec)}</td><td>${ist(r.startedAt)}</td>
+      <td><button class="btn sm" data-view="${esc(r.id)}" ${sub ? "" : "disabled"}>View</button>
+          <button class="btn sm bad" data-reset="${esc(r.id)}" data-name="${esc(r.name)}">Reset</button></td></tr>`;
+  }).join("") || `<tr><td colspan="13" class="muted" style="text-align:center;padding:24px">No candidates found.</td></tr>`;
+  document.querySelectorAll("[data-view]").forEach(b => b.onclick = () => view(b.dataset.view));
+  document.querySelectorAll("[data-reset]").forEach(b => b.onclick = () => reset(b.dataset.reset, b.dataset.name));
+}
+$("search").oninput = draw; $("filter").onchange = draw; $("refresh").onclick = load;
+
+// ---------- detail ----------
+async function view(id) {
+  try {
+    const a = await api("result?id=" + encodeURIComponent(id));
+    const k = a.result;
+    const vlist = (a.violations || []).map((v, i) => `${i + 1}. ${esc(v.type)} – ${ist(v.t)}`).join("<br>") || "None";
+    $("modalBox").innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2>${esc(a.candidate.name)}</h2><button class="btn sec sm" id="close">Close ✕</button></div>
+      <span class="pill ${esc(k)}">${esc(k)}</span> ${a.reason ? `<span class="muted">· ${esc(a.reason)}</span>` : ""}
+      <div class="kv">
+        <div><span>Mobile</span>${esc(a.candidate.mobile)}</div><div><span>Email</span>${esc(a.candidate.email)}</div>
+        <div><span>Vendor / Company</span>${esc(a.candidate.vendor)}</div><div><span>City</span>${esc(a.candidate.city)}</div>
+        <div><span>Score</span><b>${a.score} / ${a.total} (${a.percent}%)</b></div><div><span>Time taken</span>${dur(a.timeTakenSec)}</div>
+        <div><span>Started (IST)</span>${ist(a.startedAt)}</div><div><span>Submitted (IST)</span>${ist(a.submittedAt)}</div>
+        <div><span>Submitted by</span>${a.auto === "time" ? "Auto – time up" : a.auto === "violations" ? "Auto – too many tab switches" : "Candidate"}${a.late ? " (late)" : ""}</div>
+        <div><span>Tab / window switches (${a.tabSwitches})</span>${vlist}</div>
+      </div>
+      <div class="wrap"><table><thead><tr><th>#</th><th></th><th>Question</th><th>Candidate answer</th><th>Correct answer</th></tr></thead><tbody>
+      ${(a.answerLog || []).map((x, i) => `<tr><td>${i + 1}</td><td class="${x.ok ? "ok" : "no"}">${x.ok ? "✔" : "✘"}</td>
+        <td class="q">${x.img ? "🖼 " : ""}${esc(x.q)}</td><td>${x.chosen === null ? "<i class='muted'>not answered</i>" : esc(x.chosen)}</td><td>${esc(x.correct)}</td></tr>`).join("")}
+      </tbody></table></div>`;
+    $("modal").style.display = "flex";
+    $("close").onclick = () => $("modal").style.display = "none";
+  } catch (e) { alert(e.message); }
+}
+$("modal").addEventListener("click", e => { if (e.target === $("modal")) $("modal").style.display = "none"; });
+
+// ---------- reset ----------
+async function reset(id, name) {
+  if (!confirm(`Reset "${name}"?\n\nThis DELETES their result and lets them attempt the exam again. This cannot be undone.`)) return;
+  try { await api("reset", { method: "POST", body: JSON.stringify({ id }) }); load(); } catch (e) { alert(e.message); }
+}
+
+// ---------- CSV ----------
+function csvCell(v) {
+  v = String(v ?? "");
+  if (/^[=+\-@\t\r]/.test(v)) v = "'" + v; // stops Excel running a candidate's text as a formula
+  return '"' + v.replace(/"/g, '""') + '"';
+}
+$("csv").onclick = () => {
+  const head = ["Name", "Mobile", "Email", "Vendor", "City", "Status", "Score", "Total", "Percent", "Result", "Reason", "Tab switches", "Time taken", "Started (IST)", "Submitted (IST)"];
+  const lines = [head.map(csvCell).join(",")].concat(DATA.map(r => {
+    const sub = r.state === "submitted";
+    return [r.name, r.mobile, r.email, r.vendor, r.city, label(key(r)), sub ? r.score : "", r.total, sub ? r.percent + "%" : "", r.result || "", r.reason, sub ? r.tabSwitches : "", dur(r.timeTakenSec), ist(r.startedAt), ist(r.submittedAt)].map(csvCell).join(",");
+  }));
+  const blob = new Blob(["\ufeff" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+  a.download = "zoning-exam-results-" + new Date().toISOString().slice(0, 10) + ".csv"; a.click();
+};
+
+if (token()) showDash();
+</script>
+</body>
+</html>

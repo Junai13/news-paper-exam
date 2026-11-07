@@ -1,11 +1,11 @@
-import { db, json, emailKey, mobileKey, isAdmin, signToken, passwordMatches, adminConfigured } from "../lib/common.mjs";
+import { db, json, emailKey, mobileKey, isAdmin, signToken, passwordMatches, adminConfigured, safe } from "../lib/common.mjs";
 import { CONFIG } from "../lib/questions.mjs";
 
 export const config = { path: "/api/admin/*" };
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-export default async (req) => {
+export default safe(async (req) => {
   const url = new URL(req.url);
   const route = url.pathname.replace(/\/+$/, "").replace(/^\/api\/admin\//, "");
 
@@ -89,4 +89,4 @@ export default async (req) => {
   }
 
   return json({ error: "Not found" }, 404);
-};
+});

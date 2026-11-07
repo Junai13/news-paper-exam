@@ -19,6 +19,28 @@ export const emailKey = (email) =>
 
 export const mobileKey = (mobile) => "idx-mobile/" + String(mobile).trim();
 
+
+// Reserve a key only if nobody has used it before. Works on every @netlify/blobs version:
+// older versions return nothing from setJSON, so we check with get() first.
+export async function claim(store, key, value) {
+  const existing = await store.get(key, { type: "json" });
+  if (existing) return false;
+  const r = await store.setJSON(key, value, { onlyIfNew: true });
+  if (r && r.modified === false) return false; // newer versions tell us if it already existed
+  return true;
+}
+
+// Wrap a function so any crash is logged (visible in Netlify > Functions > log)
+// and returned as a clear JSON error instead of a blank failure.
+export const safe = (fn) => async (req, ctx) => {
+  try {
+    return await fn(req, ctx);
+  } catch (e) {
+    console.error("FUNCTION ERROR:", (e && e.stack) || e);
+    return json({ error: "Server error: " + ((e && e.message) || "unknown") }, 500);
+  }
+};
+
 // ---------- admin login token (signed, expires after 8 hours) ----------
 const b64 = (buf) => Buffer.from(buf).toString("base64url");
 

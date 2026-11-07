@@ -1,12 +1,12 @@
 import crypto from "node:crypto";
-import { db, json, emailKey, mobileKey } from "../lib/common.mjs";
+import { db, json, emailKey, mobileKey, claim, safe } from "../lib/common.mjs";
 import { CONFIG, buildPaper } from "../lib/questions.mjs";
 
 export const config = { path: "/api/start" };
 
 const clip = (v, n) => String(v ?? "").trim().slice(0, n);
 
-export default async (req) => {
+export default safe(async (req) => {
   // GET = public exam settings (used to show the rules on the start page)
   if (req.method === "GET") {
     return json({
@@ -39,11 +39,11 @@ export default async (req) => {
   const store = db();
   const id = crypto.randomUUID();
 
-  // Claim the mobile number and the email. "onlyIfNew" fails if it was used before.
-  const m = await store.setJSON(mobileKey(c.mobile), { id }, { onlyIfNew: true });
-  if (!m.modified) return json({ error: "This mobile number has already attempted the exam." }, 409);
-  const e = await store.setJSON(emailKey(c.email), { id }, { onlyIfNew: true });
-  if (!e.modified) {
+  // Claim the mobile number and the email (fails if either was used before).
+  if (!(await claim(store, mobileKey(c.mobile), { id }))) {
+    return json({ error: "This mobile number has already attempted the exam." }, 409);
+  }
+  if (!(await claim(store, emailKey(c.email), { id }))) {
     await store.delete(mobileKey(c.mobile)); // release the claim we just made
     return json({ error: "This email has already attempted the exam." }, 409);
   }
@@ -70,4 +70,4 @@ export default async (req) => {
     // correct answers are NOT sent
     questions: paper.map(({ correct, ...q }) => q),
   });
-};
+});

@@ -7,7 +7,7 @@
 export const CONFIG = {
   total: 40,          // questions per paper
   durationSec: 30 * 60, // exam time in seconds
-  passPct: 80,        // pass mark in %
+  passPct: 70,        // pass mark in %
   maxViolations: 3,   // tab/window/fullscreen exits allowed before the exam is ended (3 = 2 warnings, 3rd ends the exam)
   graceSec: 30,       // extra seconds allowed for network delay when submitting
 };
